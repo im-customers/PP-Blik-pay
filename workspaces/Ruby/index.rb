@@ -8,9 +8,9 @@ require_relative './oauth'
 require_relative './config'
 
 
-set :port, ENV['PORT'] || 4567
+# set :port, ENV['PORT'] || 4567
 set :public_folder, File.dirname(__FILE__) + '/views'
-set :bind, 'localhost'
+# set :bind, 'localhost'
 
 get '/' do
   erb :index
@@ -98,12 +98,3 @@ post '/webhook' do
   200
 end
 
-
-if __FILE__ == $0
-  port = ENV['PORT'] || 4567
-  puts "Starting server on port #{port}..."
-  
-  # Open the default web browser
-  Launchy.open("https://geostamp.azurewebsites.net/")
-  set :port, port
-end
