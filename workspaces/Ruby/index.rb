@@ -104,6 +104,6 @@ if __FILE__ == $0
   puts "Starting server on port #{port}..."
   
   # Open the default web browser
-  Launchy.open("http://localhost:#{port}/")
+  Launchy.open("https://geostamp.azurewebsites.net/")
   set :port, port
 end
