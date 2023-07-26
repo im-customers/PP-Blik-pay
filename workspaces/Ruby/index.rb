@@ -8,7 +8,7 @@ require_relative './oauth'
 require_relative './config'
 
 
-set :port, ENV['PORT'] || 4657
+set :port, ENV['PORT'] || 4567
 set :public_folder, File.dirname(__FILE__) + '/views'
 set :bind, 'localhost'
 
@@ -100,7 +100,7 @@ end
 
 
 if __FILE__ == $0
-  port = ENV['PORT'] || 4657
+  port = ENV['PORT'] || 4567
   puts "Starting server on port #{port}..."
   
   # Open the default web browser
