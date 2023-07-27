@@ -1,5 +1,6 @@
 {
   "name": "Ruby Sinatra",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/workspaces/Ruby",
   "dockerFile": "Dockerfile",
 
   // Uncomment the next line to use a pre-built container image from Docker Hub.
