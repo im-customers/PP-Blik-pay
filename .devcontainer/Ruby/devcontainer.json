@@ -1,16 +1,43 @@
+// For more details, see https://aka.ms/devcontainer.json.
 {
-  "name": "Ruby Sinatra",
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/workspaces/Ruby",
-  "dockerFile": "Dockerfile",
-
-  // Uncomment the next line to use a pre-built container image from Docker Hub.
-  // "image": "your-docker-image:tag",
-
-  // Use the `settings` key to specify which extensions to install in the container.
-  "settings": {
-    "terminal.integrated.shell.linux": "/bin/bash"
-  },
-
-  // Use the `appPort` key to specify the port used by your Sinatra app.
-  "appPort": [8080]
-}
+	"name": "Ruby: Paying with Blik",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/workspaces/Ruby-latest",
+	"image": "ruby:latest",
+	"postCreateCommand": "bundle install && gem install rack-session rackup",
+	"postAttachCommand": {
+	  "Start server": "rackup"
+	},
+	"forwardPorts": [
+	  8080
+	],
+	"portsAttributes": {
+	  "8080": {
+		"label": "Preview of Paying with Blik or Paypal on the web",
+		"onAutoForward": "openBrowser"
+	  }
+	},
+	"secrets": {
+	  "CLIENT_ID": {
+		"description": "Sandbox client ID of the application.",
+		"documentationUrl": "https://developer.paypal.com/api/rest/"
+	  },
+	  "CLIENT_SECRET": {
+		"description": "Sandbox secret of the application.",
+		"documentationUrl": "https://developer.paypal.com/api/rest/"
+	  },
+	  "WEBHOOK_ID": {
+		"description": "Webhook ID",
+		"documentationUrl": "https://developer.paypal.com/api/rest/"
+	  }
+	},
+	"customizations": {
+	  "vscode": {
+		"extensions": [
+		  "vsls-contrib.codetour"
+		],
+		"settings": {
+		  "git.openRepositoryInParentFolders": "always"
+		}
+	  }
+	}
+  }
