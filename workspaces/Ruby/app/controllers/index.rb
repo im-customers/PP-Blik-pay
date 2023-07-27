@@ -52,7 +52,7 @@ class IndexController
   end
 
   def send_capture_request(access_token, order_id)
-    url = "#{Sample_API_BASE}/v2/checkout/orders/#{order_id}/capture"
+    url = "#{PAYPAY_API_BASE}/v2/checkout/orders/#{order_id}/capture"
     headers = {
       "Content-Type" => "application/json",
       "Accept" => "application/json",

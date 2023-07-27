@@ -1,8 +1,17 @@
-source "https://rubygems.org"
-
+source 'https://rubygems.org'
+# The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
+gem "sprockets-rails"
+gem 'sinatra'
+gem 'webrick'
+gem 'thin'
+gem 'falcon'
+gem 'puma'
+gem 'dotenv'
+gem 'httparty'
+gem 'json'
+gem 'launchy'
 gem "minitest"
 gem "pry"
 gem "rake"
 gem "capybara"
-gem "launchy"
 gem "rack"
