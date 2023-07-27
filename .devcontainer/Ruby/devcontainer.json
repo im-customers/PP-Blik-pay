@@ -1,7 +1,7 @@
 // For more details, see https://aka.ms/devcontainer.json.
 {
 	"name": "Ruby: Paying with Blik",
-	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/workspaces/Ruby-latest",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/workspaces/Ruby",
 	"image": "ruby:latest",
 	"postCreateCommand": "bundle install && gem install rack-session rackup",
 	"postAttachCommand": {
