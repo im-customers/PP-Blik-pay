@@ -13,7 +13,7 @@ class MyController
     end
   
     def self.index
-        [200, {}, [File.read("./app/views/index.html")]]
+        [200, { 'Content-Type' => 'text/html' }, [File.read("./app/views/index.html")]]
     end
   
     def not_found
