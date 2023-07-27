@@ -14,7 +14,7 @@ RUN apt-get update && \
 RUN gem install bundler
 
 # Copy the project files into the container
-COPY . /workspaces/PP-BLIK-PAY/workspaces/Ruby
+COPY . /app
 
 # Install project dependencies
 RUN bundle install
@@ -23,4 +23,4 @@ RUN bundle install
 EXPOSE 8080
 
 # Start the development server when the container is run
-CMD ["bundle", "exec", "ruby", "app.rb", "-o", "0.0.0.0"]
+CMD ["bundle", "exec", "ruby", "index.rb", "-o", "0.0.0.0"]
