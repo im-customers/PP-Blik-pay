@@ -1,3 +1,3 @@
-require './app/controllers/personal_site'
-
-run PersonalSite
+run do |env|
+    [200, {}, ["Hello World"]]
+end
