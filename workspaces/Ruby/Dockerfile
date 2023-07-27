@@ -20,7 +20,7 @@ COPY . /Ruby/
 RUN bundle install
 
 # Expose the port used by the Sinatra app (replace 4567 with the appropriate port if needed)
-EXPOSE 8080
+EXPOSE 4567
 
 # Start the development server when the container is run
 CMD ["bundle", "exec", "ruby", "index.rb", "-o", "0.0.0.0"]
