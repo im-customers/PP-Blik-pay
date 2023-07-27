@@ -3,7 +3,7 @@
 	"name": "Ruby: Paying with Blik",
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/workspaces/Ruby-latest",
 	"image": "ruby:latest",
-	"postCreateCommand": "bundle install",
+	"postCreateCommand": "bundle install && gem install rack-session rackup",
 	"postAttachCommand": {
 	  "Start server": "rackup"
 	},
@@ -13,7 +13,7 @@
 	"portsAttributes": {
 	  "8080": {
 		"label": "Preview of Paying with Blik or Paypal on the web",
-		"onAutoForward": "openBrowser"
+		"onAutoForward": "openPreview",
 	  }
 	},
 	"secrets": {
