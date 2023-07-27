@@ -4,7 +4,7 @@
 FROM ruby:latest
 
 # Set the working directory inside the container
-WORKDIR /PP-BLIK-PAY/workspaces/Ruby
+WORKDIR /Ruby
 
 # Install system dependencies
 RUN apt-get update && \
@@ -14,7 +14,7 @@ RUN apt-get update && \
 RUN gem install bundler
 
 # Copy the project files into the container
-COPY . /app
+COPY . /Ruby/
 
 # Install project dependencies
 RUN bundle install

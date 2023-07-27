@@ -8,7 +8,7 @@ require_relative './oauth'
 require_relative './config'
 
 
-# set :port, ENV['PORT'] || 4567
+set :port, ENV['PORT'] || 4657
 set :public_folder, File.dirname(__FILE__) + '/views'
 set :bind, 'localhost'
 
@@ -98,3 +98,12 @@ post '/webhook' do
   200
 end
 
+
+if __FILE__ == $0
+  port = ENV['PORT'] || 8080
+  puts "Starting server on port #{port}..."
+  
+  # Open the default web browser
+ # Launchy.open("http://localhost:#{port}/")
+  set :port, port
+end
