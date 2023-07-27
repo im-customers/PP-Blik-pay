@@ -1,19 +1,17 @@
 // For more details, see https://aka.ms/devcontainer.json.
 {
-  "name": "Javascript: Paying with Blik",
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/workspaces/Javascript",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
-  "postCreateCommand": "npm install --ignore-scripts",
-  "postAttachCommand": {
-    "Start server": "npx kill-port 8080 && npm start"
-  },
+  "name": "DotNet: Paying with Blik",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/workspaces/DotNet",
+  "image": "mcr.microsoft.com/dotnet/sdk:6.0",
+  "postCreateCommand": "dotnet restore",
+  "postAttachCommand": "dotnet run",
   "forwardPorts": [
     8080
   ],
   "portsAttributes": {
     "8080": {
       "label": "Preview of Paying with Blik or Paypal on the web",
-      "onAutoForward": "openPreview"
+      "onAutoForward": "openBrowser"
     }
   },
   "secrets": {
@@ -33,7 +31,8 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "vsls-contrib.codetour"
+        "vsls-contrib.codetour",
+        "ms-dotnettools.csharp"
       ],
       "settings": {
         "git.openRepositoryInParentFolders": "always"
