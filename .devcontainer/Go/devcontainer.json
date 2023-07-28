@@ -8,10 +8,10 @@
     "Start server": "go run ./index.go"
   },
   "forwardPorts": [
-    8080
+    3000
   ],
   "portsAttributes": {
-    "8080": {
+    "3000": {
       "label": "Preview of Paying with Blik or Paypal on the web",
       "onAutoForward": "openBrowser"
     }
