@@ -1,0 +1,42 @@
+// For more details, see https://aka.ms/devcontainer.json.
+{
+  "name": "DotNet: Paying with Blik",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/workspaces/DotNet",
+  "image": "mcr.microsoft.com/dotnet/sdk:6.0",
+  "postCreateCommand": "dotnet restore",
+  "postAttachCommand": "dotnet run",
+  "forwardPorts": [
+    8080
+  ],
+  "portsAttributes": {
+    "8080": {
+      "label": "Preview of Paying with Blik or Paypal on the web",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "secrets": {
+    "CLIENT_ID": {
+      "description": "Sandbox client ID of the application.",
+      "documentationUrl": "https://developer.paypal.com/api/rest/"
+    },
+    "APP_SECRET": {
+      "description": "Sandbox secret of the application.",
+      "documentationUrl": "https://developer.paypal.com/api/rest/"
+    },
+    "WEBHOOK_ID": {
+      "description": "Webhook ID",
+      "documentationUrl": "https://developer.paypal.com/api/rest/"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vsls-contrib.codetour",
+        "ms-dotnettools.csharp"
+      ],
+      "settings": {
+        "git.openRepositoryInParentFolders": "always"
+      }
+    }
+  }
+}

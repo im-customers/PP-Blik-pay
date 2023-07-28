@@ -23,11 +23,11 @@ app.get("/", (req, res) => {
 /**
  * Capture Order handler.
  */
- app.post("/capture/:orderId", async (req, res) => {
+app.post("/capture/:orderId", async (req, res) => {
   const { orderId } = req.params
 
   const { access_token } = await getAccessToken();
-  
+  console.log(`🔍 Capturing payment for order ${orderId}`);
   const { data } = await axios({
     url: `${PAYPAL_API_BASE}/v2/checkout/orders/${orderId}/capture`,
     method: "post",
@@ -45,7 +45,7 @@ app.get("/", (req, res) => {
 /**
  * Webhook handler.
  */
- app.post("/webhook", async (req, res) => {
+app.post("/webhook", async (req, res) => {
   const { access_token } = await getAccessToken();
 
   const { event_type, resource } = req.body;
