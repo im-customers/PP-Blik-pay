@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitd5744d7760e368d968ad058004e39ac2
+class ComposerStaticInit961b633be147bbe5bac8646509f1f0d1
 {
     public static $files = array (
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
@@ -26,12 +26,14 @@ class ComposerStaticInitd5744d7760e368d968ad058004e39ac2
         ),
         'P' => 
         array (
-            'Psr\\Log\\' => 8,
-            'Psr\\Http\\Server\\' => 16,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Http\\Client\\' => 16,
             'Psr\\Container\\' => 14,
             'PhpOption\\' => 10,
+        ),
+        'N' => 
+        array (
+            'Nyholm\\Psr7\\' => 12,
         ),
         'G' => 
         array (
@@ -67,15 +69,6 @@ class ComposerStaticInitd5744d7760e368d968ad058004e39ac2
         array (
             0 => __DIR__ . '/..' . '/slim/slim/Slim',
         ),
-        'Psr\\Log\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/log/src',
-        ),
-        'Psr\\Http\\Server\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/http-server-handler/src',
-            1 => __DIR__ . '/..' . '/psr/http-server-middleware/src',
-        ),
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-factory/src',
@@ -92,6 +85,10 @@ class ComposerStaticInitd5744d7760e368d968ad058004e39ac2
         'PhpOption\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpoption/phpoption/src/PhpOption',
+        ),
+        'Nyholm\\Psr7\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/nyholm/psr7/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
@@ -119,6 +116,16 @@ class ComposerStaticInitd5744d7760e368d968ad058004e39ac2
         ),
     );
 
+    public static $prefixesPsr0 = array (
+        'P' => 
+        array (
+            'Pimple' => 
+            array (
+                0 => __DIR__ . '/..' . '/pimple/pimple/src',
+            ),
+        ),
+    );
+
     public static $classMap = array (
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
@@ -131,9 +138,10 @@ class ComposerStaticInitd5744d7760e368d968ad058004e39ac2
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitd5744d7760e368d968ad058004e39ac2::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitd5744d7760e368d968ad058004e39ac2::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitd5744d7760e368d968ad058004e39ac2::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit961b633be147bbe5bac8646509f1f0d1::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit961b633be147bbe5bac8646509f1f0d1::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit961b633be147bbe5bac8646509f1f0d1::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit961b633be147bbe5bac8646509f1f0d1::$classMap;
 
         }, null, ClassLoader::class);
     }

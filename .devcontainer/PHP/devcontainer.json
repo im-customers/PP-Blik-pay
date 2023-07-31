@@ -4,9 +4,7 @@
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/workspaces/PHP",
   "image": "mcr.microsoft.com/devcontainers/php",
   "postCreateCommand": "composer install",
-  // "postAttachCommand": {
-  //   "Start server": "npx kill-port 8080 && npm start"
-  // },
+  "postAttachCommand": "php -S localhost:8080",
   "forwardPorts": [
     8080
   ],
