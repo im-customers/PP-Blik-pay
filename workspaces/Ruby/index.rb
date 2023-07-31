@@ -1,8 +1,6 @@
-require 'sinatra'
 require 'dotenv'
 require 'httparty'
 require 'json'
-require 'launchy'
 
 require_relative './oauth'
 require_relative './config'

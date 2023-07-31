@@ -1,0 +1,7 @@
+.env
+/bin
+/obj
+/launchSettings.json
+.suo
+.vs
+```

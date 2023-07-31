@@ -1,13 +1,17 @@
 // For more details, see https://aka.ms/devcontainer.json.
 {
   "name": "Go: Paying with Blik",
-  "workspaceFolder": "/workspaces/PayPal-Codespaces/workspaces/Go",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/workspaces/Go",
+  "image": "mcr.microsoft.com/devcontainers/go",
+  "postCreateCommand": "go build -v -buildmode=default -mod=readonly -buildvcs=false",
+  "postAttachCommand": {
+    "Start server": "go run ./index.go"
+  },
   "forwardPorts": [
-    8080
+    3000
   ],
   "portsAttributes": {
-    "8080": {
+    "3000": {
       "label": "Preview of Paying with Blik or Paypal on the web",
       "onAutoForward": "openBrowser"
     }

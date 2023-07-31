@@ -1,0 +1,41 @@
+# Ignore Composer's vendor directory
+/vendor/
+
+# Ignore Composer's lock file
+/composer.lock
+
+# Ignore the .env file containing sensitive information
+.env
+
+# Ignore PHPStorm IDE settings
+/.idea/
+
+# Ignore any log files generated during development
+/log/
+*.log
+
+# Ignore any build artifacts or compiled code
+/build/
+*.phar
+*.php_cs.cache
+.phpunit.result.cache
+/phpunit.xml
+/phpunit.xml.dist
+
+# Ignore any OS-generated files
+.DS_Store
+Thumbs.db
+
+# Ignore session files
+/sessions/
+
+# Ignore cache files
+/cache/
+
+# Ignore coverage reports
+/coverage/
+/.phpunit.result.cache
+/phpunit-coverage.xml
+
+# Ignore user-specific configuration files
+/.user.ini
