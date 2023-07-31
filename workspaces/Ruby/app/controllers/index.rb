@@ -2,6 +2,7 @@
 require "json"
 require "net/http"
 require "uri"
+require 'rack'
 require_relative "oauth"
 require_relative "config"
 
@@ -26,8 +27,10 @@ class IndexController
   end
 
   def self.capture_order(order_id)
+    puts 'Blik Response: ' + order_id
     access_token = get_access_token
     response_data = send_capture_request(access_token, order_id)
+    puts 'Blik Response: ' + response_data
     @response.write(response_data.to_json)
   rescue StandardError
     @response.status = 400
@@ -65,7 +68,7 @@ class IndexController
 
     request = Net::HTTP::Post.new(uri.path, headers)
     response = http.request(request)
-
+    puts '💰 Payment captured!'
     JSON.parse(response.body)
   end
 
