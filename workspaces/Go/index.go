@@ -2,7 +2,10 @@ package main
 
 import (
 	oauth "PP-Blik-pay/server/oauth"
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -19,19 +22,22 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "./static/index.html")
 }
 
-func captureHandler(w http.ResponseWriter, r *http.Request) {
-	orderID := mux.Vars(r)["orderId"]
+func capturePaymentHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	orderID := vars["orderId"]
 
-	// Implement your logic to get access_token using the getAccessToken() function
-	// The getAccessToken() function should return the access_token value.
-	// For brevity, I am assuming you have a function that retrieves the access_token.
 	access_token, err := oauth.GetAccessToken()
-
-	url := fmt.Sprintf("%s/v2/checkout/orders/%s/capture", PAYPAL_API_BASE, orderID)
-	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
-		log.Println("Error creating HTTP request:", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		http.Error(w, "Failed to get access token", http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Printf("🔍 Capturing payment for order %s\n", orderID)
+	reqURL := fmt.Sprintf("%s/v2/checkout/orders/%s/capture", PAYPAL_API_BASE, orderID)
+
+	req, err := http.NewRequest("POST", reqURL, nil)
+	if err != nil {
+		http.Error(w, "Failed to create request", http.StatusInternalServerError)
 		return
 	}
 
@@ -39,24 +45,136 @@ func captureHandler(w http.ResponseWriter, r *http.Request) {
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("Authorization", "Bearer "+access_token)
 
-	client := http.DefaultClient
+	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Println("Error sending HTTP request:", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		http.Error(w, "Failed to make the request", http.StatusInternalServerError)
 		return
 	}
 	defer resp.Body.Close()
 
-	// Process the response and handle the payment capture result as needed
-	// For example, you can read the response body using ioutil.ReadAll() and return it in the response.
-	// But for brevity, I'm simply sending "Payment captured!" as the response.
-	fmt.Fprintln(w, "Payment captured!")
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		http.Error(w, "Failed to read response", http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Println("💰 Payment captured!")
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(respBody)
+}
+
+type WebhookEvent struct {
+	EventType string `json:"event_type"`
+	Resource  struct {
+		ID string `json:"id"`
+	} `json:"resource"`
 }
 
 func webhookHandler(w http.ResponseWriter, r *http.Request) {
-	// Implement the logic for handling webhooks
-	// For brevity, I'm just responding with a 200 OK status.
+	accessToken, err := oauth.GetAccessToken()
+	if err != nil {
+		fmt.Println("⚠️  Webhook signature verification failed.")
+		http.Error(w, "Failed to get access token", http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Println("🪝 Received Webhook Event")
+
+	var webhookEvent WebhookEvent
+	err = json.NewDecoder(r.Body).Decode(&webhookEvent)
+	if err != nil {
+		fmt.Println("⚠️  Failed to parse request body")
+		http.Error(w, "Failed to parse request body", http.StatusBadRequest)
+		return
+	}
+
+	// Verify the webhook signature
+	verifyData := map[string]interface{}{
+		"transmission_id":   r.Header.Get("paypal-transmission-id"),
+		"transmission_time": r.Header.Get("paypal-transmission-time"),
+		"cert_url":          r.Header.Get("paypal-cert-url"),
+		"auth_algo":         r.Header.Get("paypal-auth-algo"),
+		"transmission_sig":  r.Header.Get("paypal-transmission-sig"),
+		"webhook_id":        oauth.WEBHOOK_ID,
+		"webhook_event":     webhookEvent,
+	}
+
+	verifyDataJSON, err := json.Marshal(verifyData)
+	if err != nil {
+		fmt.Println("⚠️  Failed to serialize verify data")
+		http.Error(w, "Failed to verify webhook signature", http.StatusBadRequest)
+		return
+	}
+
+	reqURL := fmt.Sprintf("%s/v1/notifications/verify-webhook-signature", PAYPAL_API_BASE)
+	req, err := http.NewRequest("POST", reqURL, bytes.NewBuffer(verifyDataJSON))
+	if err != nil {
+		fmt.Println("⚠️  Failed to create verify request")
+		http.Error(w, "Failed to verify webhook signature", http.StatusInternalServerError)
+		return
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Authorization", "Bearer "+accessToken)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("⚠️  Webhook signature verification failed.")
+		http.Error(w, "Failed to verify webhook signature", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("⚠️  Failed to read verification response")
+		http.Error(w, "Failed to verify webhook signature", http.StatusInternalServerError)
+		return
+	}
+
+	var verificationResponse map[string]interface{}
+	err = json.Unmarshal(respBody, &verificationResponse)
+	if err != nil {
+		fmt.Println("⚠️  Failed to parse verification response")
+		http.Error(w, "Failed to verify webhook signature", http.StatusInternalServerError)
+		return
+	}
+
+	verificationStatus, ok := verificationResponse["verification_status"].(string)
+	if !ok || verificationStatus != "SUCCESS" {
+		fmt.Println("⚠️  Webhook signature verification failed.")
+		http.Error(w, "Failed to verify webhook signature", http.StatusBadRequest)
+		return
+	}
+
+	// Capture the order if event_type is CHECKOUT.ORDER.APPROVED
+	if webhookEvent.EventType == "CHECKOUT.ORDER.APPROVED" {
+		captureURL := fmt.Sprintf("%s/v2/checkout/orders/%s/capture", PAYPAL_API_BASE, webhookEvent.Resource.ID)
+		captureReq, err := http.NewRequest("POST", captureURL, nil)
+		if err != nil {
+			fmt.Println("❌ Payment failed.")
+			http.Error(w, "Failed to capture the order", http.StatusInternalServerError)
+			return
+		}
+
+		captureReq.Header.Set("Content-Type", "application/json")
+		captureReq.Header.Set("Accept", "application/json")
+		captureReq.Header.Set("Authorization", "Bearer "+accessToken)
+
+		captureResp, err := client.Do(captureReq)
+		if err != nil {
+			fmt.Println("❌ Payment failed.")
+			http.Error(w, "Failed to capture the order", http.StatusInternalServerError)
+			return
+		}
+		defer captureResp.Body.Close()
+
+		fmt.Println("💰 Payment captured!")
+	}
+
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -74,12 +192,12 @@ func main() {
 	})
 
 	r.HandleFunc("/", indexHandler).Methods("GET")
-	r.HandleFunc("/capture/{orderId}", captureHandler).Methods("POST")
+	r.HandleFunc("/capture/{orderId}", capturePaymentHandler).Methods("POST")
 	r.HandleFunc("/webhook", webhookHandler).Methods("POST")
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080"
+		port = "3000"
 	}
 
 	cmd := exec.Command("open", fmt.Sprintf("http://localhost:%s", port))

@@ -7,13 +7,37 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
+
+	"github.com/joho/godotenv"
 )
 
-const (
-	PAYPAL_API_BASE = "https://api.sandbox.paypal.com"                                                   // Replace with the actual PayPal API base URL
-	CLIENT_ID       = "AfO8JyqOwNtRMq-3X9jr583UkVF10hxeG9Ifku6354w4Xh6eNOSClKl_6lLGi8FEDxseWsDwd9TdmGFG" // Replace with your PayPal client ID
-	APP_SECRET      = "EBv2wZGG1L46fHNC7AZJcq_De-OqJrEjRarQeBiLnHBIoILGiNfgphPnxrwMCNIVSj_xpMQed1bHpVMI" // Replace with your PayPal app secret
+var (
+	isProd          bool
+	PAYPAL_API_BASE string
+	CLIENT_ID       string
+	APP_SECRET      string
+	WEBHOOK_ID      string
 )
+
+func init() {
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println("Error loading .env file:", err)
+	}
+
+	isProd = os.Getenv("NODE_ENV") == "production"
+	PAYPAL_API_BASE = getPaypalAPIBase()
+	CLIENT_ID = os.Getenv("CLIENT_ID")
+	APP_SECRET = os.Getenv("APP_SECRET")
+}
+
+func getPaypalAPIBase() string {
+	if isProd {
+		return "https://api.paypal.com"
+	}
+	return "https://api.sandbox.paypal.com"
+}
 
 func GetAccessToken() (string, error) {
 	credentials := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", CLIENT_ID, APP_SECRET)))
@@ -39,14 +63,16 @@ func GetAccessToken() (string, error) {
 
 	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		fmt.Printf("⚠️ Error in generating access token")
 		return "", err
 	}
+	fmt.Printf("🔍 access token: ", respBody)
 
 	return string(respBody), nil
 }
 
 // func main() {
-// 	accessToken, err := getAccessToken()
+// 	accessToken, err := GetAccessToken()
 // 	if err != nil {
 // 		fmt.Println("Error:", err)
 // 		return
