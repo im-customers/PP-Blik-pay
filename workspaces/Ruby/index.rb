@@ -1,14 +1,12 @@
-require 'sinatra'
 require 'dotenv'
 require 'httparty'
 require 'json'
-require 'launchy'
 
 require_relative './oauth'
 require_relative './config'
 
 
-
+set :port, ENV['PORT'] || 4657
 set :public_folder, File.dirname(__FILE__) + '/views'
 set :bind, 'localhost'
 
@@ -100,11 +98,10 @@ end
 
 
 if __FILE__ == $0
-  port = ENV['PORT'] || 9880
+  port = ENV['PORT'] || 8080
   puts "Starting server on port #{port}..."
   
   # Open the default web browser
-  Launchy.open("http://localhost:#{port}/")
-
+ # Launchy.open("http://localhost:#{port}/")
   set :port, port
 end

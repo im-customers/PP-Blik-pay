@@ -3,9 +3,9 @@
   "name": "Ruby: Paying with Blik",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/workspaces/Ruby",
   "image": "ruby:latest",
-  "postCreateCommand": "bundle install",
+  "postCreateCommand": "bundle install && gem install rack-session rackup",
   "postAttachCommand": {
-    "Start server": "ruby sample.rb"
+    "Start server": "rackup"
   },
   "forwardPorts": [
     8080
